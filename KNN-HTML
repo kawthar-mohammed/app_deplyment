@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Model Prediction</title>
+</head>
+<body>
+    <h1>Predict with Our Model</h1>
+
+    <label for="feature1">minutes played:</label>
+    <input type="number" id="feature1" name="feature1"><br><br>
+
+    <label for="feature2">highest value:</label>
+    <input type="number" id="feature2" name="feature2"><br><br>
+
+    <button onclick="predict()">Predict</button>
+
+    <p id="prediction"></p>
+
+    <script>
+        async function predict() {
+            const feature1 = document.getElementById('feature1').value;
+            const feature2 = document.getElementById('feature2').value;
+
+            const response = await fetch('https://app-deplyment-4.onrender.com/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    feature1: parseFloat(feature1),
+                    feature2: parseFloat(feature2)
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.prediction !== undefined) {
+                document.getElementById('prediction').textContent = `Prediction: ${data.prediction}`;
+            } else if (data.error !== undefined) {
+                document.getElementById('prediction').textContent = `Error: ${data.error}`;
+            } else {
+                document.getElementById('prediction').textContent = 'An unexpected error occurred.';
+            }
+        }
+    </script>
+</body>
+</html>
